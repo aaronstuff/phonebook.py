@@ -1,0 +1,93 @@
+from .phonebook import PhoneBook
+from enum import Enum
+
+
+class Interface:
+	phone_book = PhoneBook()
+
+	class MenuItems(Enum):
+		ADD = ["1", "Add"]
+		SEARCH = ["2", "Search"]
+		DELETE = ["3", "Delete"]
+		MODIFY = ["4", "Modify"]
+		EXIT = ["5", "Exit"]
+		SHOW_ALL = ["6", "Show All"]
+
+	def __init__(self):
+		pass
+
+	def start(self):
+		choice = None
+		while choice != self.MenuItems.EXIT[0]:
+			choice = self.show_main_menu()
+
+	def build_menu(self):
+		menu = ""
+		for item in self.MenuItems:
+			menu += self.MenuItems[item][0] + "- " + self.MenuItems[item][1] + ", "
+		return menu
+
+	def show_main_menu(self):
+		good_selection = False
+		choice = None
+		while not good_selection:
+			print(self.build_menu())
+			choice = input("Enter the number: ")
+			if choice == self.MenuItems.ADD[0]:
+				good_selection = True
+				self.ask_new_contact()
+			elif choice == self.MenuItems.SEARCH[0]:
+				good_selection = True
+				self.ask_search_term()
+			elif choice == self.MenuItems.DELETE[0]:
+				good_selection = True
+				self.ask_delete_contact()
+			elif choice == self.MenuItems.MODIFY[0]:
+				good_selection = True
+				self.ask_update_contact()
+			elif choice == self.MenuItems.EXIT[0]:
+				good_selection = True
+				self.exit()
+			elif choice == self.MenuItems.SHOW_ALL[0]:
+				good_selection = True
+				self.show_all()
+			else:
+				print("Wrong choice. Please try again.")
+		return choice
+
+	def ask_new_contact(self):
+		name = input("Name: ")
+		phone_no = input("Phone no: ")
+		contact_added = self.phone_book.add_contact(name, phone_no)
+		if contact_added:
+			print("Contact added")
+		else:
+			print("Contact not added!")
+
+	def ask_search_term(self):
+		search_by_name = input("Enter a name to search: ")
+		search_result = self.phone_book.search_contact(search_by_name)
+		print(search_result)
+
+	def ask_delete_contact(self):
+		name = input("Enter a name to delete: ")
+		contact_deleted = self.phone_book.delete_contact(name)
+		if contact_deleted:
+			print("Contact deleted")
+		else:
+			print("Contact not deleted!")
+
+	def ask_update_contact(self):
+		name = input("Update name: ")
+		phone_no = input("Update a phone no: ")
+		contact_updated = self.phone_book.update_contact(name, phone_no)
+		if contact_updated:
+			print("Contact updated")
+		else:
+			print("Contact not updated!")
+
+	def show_all(self):
+		print(self.phone_book.all_contacts())
+
+	def exit(self):
+		print("Exiting")
